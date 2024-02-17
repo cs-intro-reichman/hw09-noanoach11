@@ -26,7 +26,7 @@ public class List {
 
     
 	
-    /** Constructs an empty list. */
+    /** Constructs an empty list. */.
     public List() {
         first = null;
         size = 0;
