@@ -33,19 +33,52 @@ public class LanguageModel {
 
     /** Builds a language model from the text in the given file (the corpus). */
 	public void train(String fileName) {
-		// Your code goes here
+		
 	}
 
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
 	public void calculateProbabilities(List probs) {				
-		// Your code goes here
+		int totalCharacters = 0;
+
+        // Iterate over the list and calculate total characters
+        ListIterator iterator = probs.listIterator(0);
+        while (iterator.hasNext()) {
+            CharData charData = iterator.next();
+            totalCharacters += charData.count;
+        }
+
+        // Calculate probabilities and cumulative probabilities
+        double cumulativeProbability = 0.0;
+        iterator = probs.listIterator(0); // Reset iterator
+        while (iterator.hasNext()) {
+            CharData charData = iterator.next();
+            charData.p = (double) charData.count / totalCharacters;
+            cumulativeProbability += charData.p;
+            charData.cp = cumulativeProbability;
+        }    
 	}
 
     // Returns a random character from the given probabilities list.
 	public char getRandomChar(List probs) {
-		// Your code goes here
-	}
+		double randomNumber = randomGenerator.nextDouble();
+        double cumulativeProbability = 0.0;
+
+        // Iterate over the list to find the character with a cumulative probability greater than the random number
+        ListIterator iterator = probs.listIterator(0);
+        while (iterator.hasNext()) {
+            CharData charData = iterator.next();
+            cumulativeProbability += charData.cp;
+            if (randomNumber <= cumulativeProbability) {
+                return charData.chr;
+            }
+        }
+
+        // Fallback: return the last character if no character is found
+        return probs.get(probs.getSize() - 1).chr;
+    }
+        
+	
 
     /**
 	 * Generates a random text, based on the probabilities that were learned during training. 
@@ -55,7 +88,8 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		// Your code goes here
+		
+        return null;
 	}
 
     /** Returns a string representing the map of this language model. */
@@ -71,4 +105,6 @@ public class LanguageModel {
     public static void main(String[] args) {
 		// Your code goes here
     }
+
 }
+
