@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 /** A linked list of character data objects.
  *  (Actually, a list of Node objects, each holding a reference to a character data object.
  *  However, users of this class are not aware of the Node objects. As far as they are concerned,
@@ -5,11 +7,24 @@
  *  mention the existence of the Node objects). */
 public class List {
 
+    public static void main(String[] args){
+        List q = new List();
+        q.addFirst('A');
+        q.addFirst('O');
+        q.addFirst('N');
+        q.remove('N');
+
+        System.out.println(q.toString());
+        System.out.println(q.get(1));
+    }
+
     // Points to the first node in this list
     private Node first;
 
     // The number of elements in this list
     private int size;
+
+    
 	
     /** Constructs an empty list. */
     public List() {
@@ -29,43 +44,113 @@ public class List {
 
     /** GIVE Adds a CharData object with the given character to the beginning of this list. */
     public void addFirst(char chr) {
-        // Your code goes here
+        CharData newData = new CharData(chr);
+        Node newNode = new Node(newData);
+        newNode.next = this.first;
+        this.first = newNode;
+        this.size++;
     }
     
-    /** GIVE Textual representation of this list. */
+    // GIVE Textual representation of this list.
     public String toString() {
-        // Your code goes here
+        if (size == 0) return "()";
+
+        String str = "(";
+        Node current = first;
+        while (current != null) {
+            str += current.cp + " ";
+            current = current.next;
+        }
+        return str.substring(0, str.length() - 1) + ")";
     }
 
-    /** Returns the index of the first CharData object in this list
-     *  that has the same chr value as the given char,
-     *  or -1 if there is no such object in this list. */
+    // Returns the index of the first CharData object in this list
+    // *  that has the same chr value as the given char,
+    // *  or -1 if there is no such object in this list. 
     public int indexOf(char chr) {
-        // Your code goes here
+        Node current = first;
+        int counter = 0;
+        while (!(current==null)) {
+            if(current.cp.equals(chr)){
+                return (counter);
+            }
+            current=current.next;
+            counter++;
+        }
+        return -1;
     }
 
-    /** If the given character exists in one of the CharData objects in this list,
-     *  increments its counter. Otherwise, adds a new CharData object with the
-     *  given chr to the beginning of this list. */
+    // If the given character exists in one of the CharData objects in this list,
+    // *  increments its counter. Otherwise, adds a new CharData object with the
+    //*  given chr to the beginning of this list. 
     public void update(char chr) {
-        // Your code goes here
+        Node current = first;
+        int counter=0;
+        int indexToUpdate = indexOf(chr);
+
+        if(indexToUpdate==-1){
+            addFirst(chr);
+        }else{
+            while (counter<indexToUpdate) {
+                counter++;
+                current=current.next;    
+            }
+            current.cp.count++;
+        }
     }
 
-    /** GIVE If the given character exists in one of the CharData objects
-     *  in this list, removes this CharData object from the list and returns
-     *  true. Otherwise, returns false. */
+    // GIVE If the given character exists in one of the CharData objects
+    // *  in this list, removes this CharData object from the list and returns
+    // *  true. Otherwise, returns false. 
     public boolean remove(char chr) {
-        // Your code goes here
+    Node current = first;
+    Node prev = null;
+
+    // Find the node to remove and track its previous node
+    while (current != null && current.cp.chr != chr) {
+        prev = current;
+        current = current.next;
     }
 
-    /** Returns the CharData object at the specified index in this list. 
-     *  If the index is negative or is greater than the size of this list, 
-     *  throws an IndexOutOfBoundsException. */
+    // If the node is not found, return false
+    if (current == null) {
+        return false;
+    }
+
+    // Update the previous node's next reference to skip over the current node
+    if (prev != null) {
+        prev.next = current.next;
+    } else {
+        // If the node to remove is the first node, update the first reference
+        first = current.next;
+    }
+
+    // Set current node to null to recycle it
+    current = null;
+    
+    // Decrease the size of the list
+    this.size--;
+
+    // Indicate successful removal
+    return true;
+    }
+
+
+    // Returns the CharData object at the specified index in this list. 
+    // *  If the index is negative or is greater than the size of this list, 
+    //*  throws an IndexOutOfBoundsException. 
     public CharData get(int index) {
-        // Your code goes here
+        if (index >= this.size || index < 0){
+            throw new IndexOutOfBoundsException("illegal index " + index);
+            }
+            Node current = this.first;
+            for (int i = 0; i < index; i++) {
+            current = current.next;
+            }
+            return current.cp;
     }
 
-    /** Returns an array of CharData objects, containing all the CharData objects in this list. */
+    // Returns an array of CharData objects, containing all the CharData objects in this list. 
     public CharData[] toArray() {
 	    CharData[] arr = new CharData[size];
 	    Node current = first;
@@ -77,7 +162,7 @@ public class List {
         return arr;
     }
 
-    /** Returns an iterator over the elements in this list, starting at the given index. */
+    // Returns an iterator over the elements in this list, starting at the given index. 
     public ListIterator listIterator(int index) {
 	    // If the list is empty, there is nothing to iterate   
 	    if (size == 0) return null;
@@ -90,5 +175,6 @@ public class List {
         }
         // Returns an iterator that starts in that element
 	    return new ListIterator(current);
-    }
+    } 
+    
 }
